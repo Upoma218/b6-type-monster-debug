@@ -1,6 +1,6 @@
 const display = document.getElementById("display");
 const question = document.getElementById("question");
-const startBtn = document.getElementById("start");
+const startBtn = document.getElementById("starts");
 const countdownOverlay = document.getElementById("countdown");
 const resultModal = document.getElementById("result");
 const modalBackground = document.getElementById("modal-background");
@@ -101,23 +101,24 @@ const closeModal = () => {
 
 const start = () => {
   // If already started, do not start again
-  if (startTime) return;
-
   let count = 3;
-  countdownOverlay.style.display = "flex";
+  if (startTime) {
+    countdownOverlay.style.display = "flex";
+    return count;
+  }
 
   const startCountdown = setInterval(() => {
-    countdownOverlay.innerHTML = '<h1>${count}</h1>';
+    countdownOverlay.innerHTML = `<h1>${count}</h1>`;
 
     // finished timer
-    if (count == 0) {
+    if (count === 0) {
       // -------------- START TYPING -----------------
       document.addEventListener("keydown", typeController);
-      countdownOverlay.style.display = "flex";
       display.classList.remove("inactive");
-
+      countdownOverlay.style.display = "none";
       clearInterval(startCountdown);
       startTime = new Date().getTime();
+      console.log(startTime);
     }
     count--;
   }, 1000);
@@ -129,11 +130,13 @@ startBtn.addEventListener("click", start);
 // If history exists, show it
 displayHistory();
 
+
 // Show typing time spent
 setInterval(() => {
   const currentTime = new Date().getTime();
   const timeSpent = (currentTime - startTime) / 1000;
-
-
-  document.getElementById("show-time").innerHTML = `${startTime ? timeSpent : 0} seconds`;
+  // console.log(currentTime);
+  const showTimeInt = startTime ? timeSpent : 0;
+  const showTime = parseInt(showTimeInt)
+  document.getElementById("show-time").innerHTML = `${showTime} seconds`;
 }, 1000);
